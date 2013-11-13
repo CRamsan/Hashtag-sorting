@@ -4,7 +4,7 @@ namespace Fun
 {
 	class MainClass
 	{
-		public const int LIST_SIZE = 10;
+		public const int LIST_SIZE = 20;
 
 		public static void Main (string[] args)
 		{
@@ -20,8 +20,8 @@ namespace Fun
 			//insertionSort(randomList);
 			//mergeSort(randomList);
 			//quicksort(randomList);
-			//quicksortinplace(randomList, 0, randomList.Length);
-			selectionsort(randomList);
+			//quicksortinplace(randomList, 0, randomList.Length - 1);
+			//selectionsort(randomList);
 			for (int i =0; i < randomList.Length; i++) 
 			{
 				Console.Out.WriteLine(randomList[i]);
@@ -191,36 +191,48 @@ namespace Fun
 			partition(list, pivotIndex + 1, start + length - pivotIndex - 1);
 		}
 
-		//Not working yet
-		public static void quicksortinplace (int[] list, int start, int length)
+		public static void quicksortinplace (int[] list, int start, int end)
 		{
-			if(length < 2)
+			if(start < end)
 			{
-				return;
+				int pivotIndex = partitioninplace(list, start, end);
+				quicksortinplace(list, start, pivotIndex - 1);
+				quicksortinplace(list, pivotIndex + 1,  end);
 			}
-			int pivotIndex = partitioninplace(list, start, length);
-			quicksortinplace(list, start, pivotIndex - start);
-			quicksortinplace(list, pivotIndex + 1,  length - pivotIndex - 1);
 		}
 		
-		private static int partitioninplace (int[] list, int start, int length)
+		private static int partitioninplace (int[] list, int start, int end)
 		{
 			Random rnd = new Random ();
-			int pivotIndex = start + rnd.Next (length);
-			pivotIndex = 2;
+			int pivotIndex = start + rnd.Next (end - start);
 			int pivot = list [pivotIndex];
-			swap(list, pivotIndex, length - 1);
-			int left = start, right = start + length - 1;
+//			Console.Out.WriteLine("Pivot is " + pivot + " in index " + (pivotIndex - start));
+//			for (int i =start; i < start + length; i++) 
+//			{
+//				Console.Out.Write(list[i] + "-");
+//			}
+//			Console.Out.WriteLine();
+
+			int left = start, right = end;
+			swap(list, pivotIndex, right);
 			int storeIndex = left;
-			while (left < right) {
-				if(list[left] <= pivot)
+			for(int i  = left; i < right ; i++)
+			{
+				if(list[i] <= pivot)
 				{
-					swap(list, left, storeIndex);
+					swap(list, i, storeIndex);
 					storeIndex++;
 				}
-				left++;
 			}
 			swap(list, storeIndex, right);
+//			for (int i =start; i < start + length; i++) 
+//			{
+//				Console.Out.Write(list[i] + "-");
+//			}
+//			Console.Out.WriteLine();
+//			Console.Out.WriteLine("Pivot is now at " +  (storeIndex - start));
+//			Console.Out.WriteLine();
+
 			return storeIndex;
 		}
 
@@ -264,20 +276,9 @@ namespace Fun
 
 		private static void swap(int[] list, int a, int b)
 		{
-//			for (int i =0; i < list.Length; i++) 
-//			{
-//				Console.Out.Write(list[i] + "-");
-//			}
-//			Console.Out.WriteLine();
 			int temp = list[a];
 			list[a] = list[b];
 			list[b] = temp;
-//			for (int i =0; i < list.Length; i++) 
-//			{
-//				Console.Out.Write(list[i] + "-");
-//			}
-//			Console.Out.WriteLine();
-//			Console.Out.WriteLine();
 		}
 	}
 }
