@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 
 namespace Fun
 {
@@ -6,7 +7,44 @@ namespace Fun
 	{
 		public const int LIST_SIZE = 20;
 
-		public static void Main (string[] args)
+		public static void TestPrimes (string[] args)
+		{
+			int target = 113;
+			ArrayList primes = getPrimes(target);
+			ArrayList primes2 = getPrimesModified(target);
+			for (int i = 0; i < primes.Count; i++) 
+			{
+				Console.Out.WriteLine("Prime at i:\t" + i + " " + primes[i] + "-" + primes2[i]);
+				if(primes[i] == primes2[i]){
+					Console.Out.WriteLine("Prime at i:\t" + i + " " + primes[i] + "-" + primes2[i]);
+				}else{
+					Console.Out.WriteLine("Discrepancy at i:\t" + i);
+					Console.Out.WriteLine("1)Prime i :\t" + primes[i]);
+					Console.Out.WriteLine("2)Prime i :\t" + primes2[i]);
+					break;
+				}
+			}
+		}
+
+		public static void TestFibonacci (string[] args)
+		{
+			for (int i=0; i < 100; i++) {
+				int rec = getFibonacciRecursive(i);
+				int iter = getFibonacciIterative(i);
+				int form = getFibonacciByFormula(i);
+				if(rec != iter || iter != form){
+					Console.Out.WriteLine("Discrepancy at i:\t" + i);
+					Console.Out.WriteLine("Fib by recursion:\t" + rec);
+					Console.Out.WriteLine("Fib by iteration:\t" + iter);
+					Console.Out.WriteLine("Fib by formula:  \t" + form);
+					break;
+				}else{
+					Console.Out.WriteLine("Fib of " + i + " is " + rec);
+				}
+			}
+		}
+
+		public static void TestSorting ()
 		{
 			int[] randomList = new int[LIST_SIZE];
 			//fillWithUniqueRandomNumbers(randomList);
@@ -15,7 +53,7 @@ namespace Fun
 			{
 				Console.Out.WriteLine(randomList[i]);
 			}
-			Console.Out.WriteLine("Now sorted: ");
+			Console.Out.WriteLine();
 			//bubbleSort(randomList);
 			//insertionSort(randomList);
 			//mergeSort(randomList);
@@ -28,6 +66,102 @@ namespace Fun
 			}
 		}
 
+		public static ArrayList getPrimes (int limit)
+		{
+			if (limit < 2) {
+				return new ArrayList();
+			}
+
+			int bound = (int)Math.Sqrt (limit);
+			bool[] map = new bool[limit];
+			map[0] = true;
+			for (int i = 1; i < bound; i++) {
+				if(!map[i]){
+					for (int j = i + (i + 1); j < limit; j+=(i + 1)) {
+						if(!map[j]){
+							map[j] = true;
+						}	
+					}
+				}
+			}
+
+			ArrayList primesArray = new ArrayList();
+			for (int i = 1; i < limit; i++) {
+				if(!map[i]){
+					primesArray.Add(i + 1);
+				}
+			}
+			return primesArray;
+		}
+		/*100
+		 * 
+		 * 9
+		 * 
+		 */
+		public static ArrayList getPrimesModified (int limit)
+		{
+			if (limit < 2) {
+				return new ArrayList();
+			}
+			ArrayList primesArray = new ArrayList();
+
+			int bound = (int)Math.Sqrt (limit);
+
+			bool isPrime;
+			for (int i = 2; i <= limit; i++) {
+				isPrime = true;
+				foreach(int prime in primesArray) {
+					if(prime * prime > i){
+						break;
+					}
+					if( i % prime == 0){
+						isPrime = false;
+						break;
+					}	
+				}
+				if(isPrime){
+					primesArray.Add(i);
+				}
+			}
+			return primesArray;
+		}
+
+		public static int getFibonacciRecursive (int target)
+		{
+			if (target > 1) {
+				return getFibonacciRecursive(target - 1) + getFibonacciRecursive(target - 2);
+			}else if (target < 0) {
+				return -1;
+			} else {
+				return target;
+			}
+		}
+	
+		public static int getFibonacciIterative (int target)
+		{
+			if (target < 0) {
+				return -1;
+			} else if (target == 0) {
+				return 0;
+			}else if (target == 1) {
+				return 1;
+			}
+
+			int total = -1, first = 0, second = 1;
+			for (int i = 2; i <= target; i++) {
+				total = first + second;
+				first = second;
+				second = total;
+			}
+			return total;
+		}
+
+		public static int getFibonacciByFormula (int target)
+		{
+			double SQRT_FIVE = Math.Sqrt(5);
+			double resultTarget = (Math.Pow((1f + SQRT_FIVE), target) - Math.Pow((1f - SQRT_FIVE), target))/((Math.Pow(2f, target))*(SQRT_FIVE));
+			return (int)resultTarget;
+		}
 
 		public static void fillWithRandomNumbers (int[] list)
 		{
